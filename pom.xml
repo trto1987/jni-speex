@@ -5,12 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.trto1987</groupId>
-    <artifactId>speex-lib</artifactId>
+    <artifactId>speex</artifactId>
     <packaging>pom</packaging>
     <version>0.0.1</version>
     <modules>
-        <module>speex-lib-native</module>
-        <module>speex-lib-j</module>
+        <module>speex-jni-native</module>
+        <module>speex-jni</module>
     </modules>
 
     <properties>

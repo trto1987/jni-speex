@@ -4,13 +4,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <groupId>com.trto1987</groupId>
-        <artifactId>speex-lib</artifactId>
+        <artifactId>speex</artifactId>
         <version>0.0.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.trto1987.speex</groupId>
-    <artifactId>speex-lib-native</artifactId>
-    <name>speex-lib-native</name>
+    <artifactId>speex-jni-native</artifactId>
+    <name>speex-jni-native</name>
     <version>0.0.1</version>
     <packaging>so</packaging>
 
@@ -33,7 +33,7 @@
                         <source>
                             <directory>${basedir}/src/main/c/jni</directory>
                             <fileNames>
-                                <fileName>Speex.c</fileName>
+                                <fileName>speex_decoder.c</fileName>
                             </fileNames>
                         </source>
                     </sources>

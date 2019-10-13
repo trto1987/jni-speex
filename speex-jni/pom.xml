@@ -5,13 +5,13 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.trto1987</groupId>
-        <artifactId>speex-lib</artifactId>
+        <artifactId>speex</artifactId>
         <version>0.0.1</version>
     </parent>
     <groupId>com.trto1987.speex</groupId>
-    <artifactId>speex-lib</artifactId>
+    <artifactId>speex-jni</artifactId>
     <version>0.0.1</version>
-    <name>speex-lib</name>
+    <name>speex-jni</name>
     <url>http://maven.apache.org</url>
     <dependencies>
         <dependency>
@@ -29,7 +29,7 @@
     </dependencies>
 
     <build>
-        <finalName>speex-lib</finalName>
+        <finalName>speex-jni</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -56,12 +56,12 @@
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>com.trto1987.speex</groupId>
-                                    <artifactId>speex-lib-native</artifactId>
+                                    <artifactId>speex-jni-native</artifactId>
                                     <version>0.0.1</version>
                                     <type>so</type>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/classes</outputDirectory>
-                                    <destFileName>libspeex.so</destFileName>
+                                    <destFileName>speex-jni.so</destFileName>
                                 </artifactItem>
                             </artifactItems>
                         </configuration>

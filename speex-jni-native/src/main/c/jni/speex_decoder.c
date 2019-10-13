@@ -6,7 +6,6 @@
 #include "speex/speex_preprocess.h"
 #include "speex/speex_echo.h"
 
-// SpeexBits bits;
 void *dec_state;
 SpeexPreprocessState *preprocess_state;
 SpeexEchoState *echo_state;
@@ -20,7 +19,7 @@ int frame_size;
  * @param jcls
  */
 JNIEXPORT jint JNICALL
-Java_com_trto1987_speex_Speex_init(JNIEnv *jenv, jclass jcls)
+Java_com_trto1987_speex_SpeexDecoder_init(JNIEnv *jenv, jclass jcls)
 {
     /* 初始化比特率结构体 */
     // speex_bits_init(&bits);
@@ -72,7 +71,7 @@ Java_com_trto1987_speex_Speex_init(JNIEnv *jenv, jclass jcls)
  * @return 0 如果没有错误, 非0正值为jni错误，非0负值为其它错误
  */
 JNIEXPORT jint JNICALL
-Java_com_trto1987_speex_Speex_decode(
+Java_com_trto1987_speex_SpeexDecoder_decode(
     JNIEnv *jenv, jobject jcls, 
     jbyteArray arr_in, jshortArray arr_out, jint size)
 {
@@ -96,8 +95,6 @@ Java_com_trto1987_speex_Speex_decode(
     /* 初始化比特率结构体 */
     speex_bits_init(&bits);
 
-    /* 清空bit结构体，以便解码器处理后面的新一帧音频数据 */
-    // speex_bits_reset(&bits);
     speex_bits_read_from(&bits, buffer_in, size);
     if (speex_decode_int(dec_state, &bits, buffer_out) != 0)
     {
@@ -130,11 +127,10 @@ Java_com_trto1987_speex_Speex_decode(
  * @param jcls
  */
 JNIEXPORT void JNICALL
-Java_com_trto1987_speex_Speex_close(JNIEnv *jenv, jclass jcls)
+Java_com_trto1987_speex_SpeexDecoder_destroy(JNIEnv *jenv, jclass jcls)
 {
     /* 销毁释放资源 */
     speex_echo_state_destroy(echo_state);
     speex_preprocess_state_destroy(preprocess_state);
     speex_decoder_destroy(dec_state);
-    // speex_bits_destroy(&bits);
 }
