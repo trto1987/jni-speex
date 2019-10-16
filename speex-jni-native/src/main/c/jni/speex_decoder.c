@@ -12,27 +12,33 @@ SpeexEchoState *echo_state;
 
 int C_DENOISE = 1;
 int C_NOISE_SUPPRESS = -25;
+float echo_filter_rate = 0.1;
+
 int frame_size;
+int sampling_rate;
 
 /** 初始化
  * @param jenv
  * @param jcls
+ * @param mode modeID for the defined mode, 0 for narrowband mode, 
+ * 1 for wideband mode, 2 for ultra-wideband mode
  */
 JNIEXPORT jint JNICALL
-Java_com_trto1987_speex_SpeexDecoder_init(JNIEnv *jenv, jclass jcls)
+Java_com_trto1987_speex_SpeexDecoder_init(JNIEnv *jenv, jclass jcls, jint mode)
 {
-    /* 初始化比特率结构体 */
-    // speex_bits_init(&bits);
-
     /* 定义并初始化解码器状态 */
-    dec_state = speex_decoder_init(&speex_nb_mode);
+    dec_state = speex_decoder_init(speex_lib_get_mode(mode));
     if (speex_decoder_ctl(dec_state, SPEEX_GET_FRAME_SIZE, &frame_size) != 0)
     {
         return 0;
     }
 
     /* 定义预处理及设置 */
-    preprocess_state = speex_preprocess_state_init(frame_size, 8000);
+    if (speex_decoder_ctl(dec_state, SPEEX_GET_SAMPLING_RATE, &sampling_rate) != 0)
+    {
+        return 0;
+    }
+    preprocess_state = speex_preprocess_state_init(frame_size, sampling_rate);
     if (preprocess_state == NULL)
     {
         return 0;
@@ -49,7 +55,7 @@ Java_com_trto1987_speex_SpeexDecoder_init(JNIEnv *jenv, jclass jcls)
     }
 
     /* 回声消除 */
-    echo_state = speex_echo_state_init(frame_size, 800);
+    echo_state = speex_echo_state_init(frame_size, echo_filter_rate * sampling_rate);
     if (echo_state == NULL)
     {
         return 0;

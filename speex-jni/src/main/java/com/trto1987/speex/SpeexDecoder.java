@@ -18,11 +18,6 @@ public class SpeexDecoder {
         logger.error("Speex load native library successful.");
 
         instance = new SpeexDecoder();
-        frameSize = instance.init();
-
-        if (frameSize == 0) {
-            logger.error("Speex init error!!!");
-        }
     }
 
     public static int getFrameSize() {
@@ -33,7 +28,26 @@ public class SpeexDecoder {
         return instance;
     }
 
-    private native int init();
+    /**
+     * init speex decoder.
+     */
+    public void init() {
+        init(SpeexModes.SPEEX_MODE_NB);
+    }
+
+    /**
+     * init speex decoder.
+     * @param nbModes speex mode @see {@link SpeexModes}
+     */
+    public void init(SpeexModes nbModes) {
+        frameSize = instance.init(nbModes.getMode());
+
+        if (frameSize == 0) {
+            logger.error("Speex init error!!!");
+        }
+    }
+
+    private native int init(int mode);
 
     /**
      * decode speex bytes
