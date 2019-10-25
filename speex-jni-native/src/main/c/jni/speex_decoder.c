@@ -6,13 +6,15 @@
 #include "speex/speex_preprocess.h"
 #include "speex/speex_echo.h"
 
-void *dec_state;
+void *decoder_state;
 SpeexPreprocessState *preprocess_state;
 SpeexEchoState *echo_state;
 
+/* 降噪、回声消除参数
 int C_DENOISE = 1;
 int C_NOISE_SUPPRESS = -25;
-float echo_filter_rate = 0.1;
+float ECHO_FILTER_RATE = 0.1;
+*/
 
 int frame_size;
 int sampling_rate;
@@ -26,18 +28,19 @@ int sampling_rate;
 JNIEXPORT jint JNICALL
 Java_com_trto1987_speex_SpeexDecoder_init(JNIEnv *jenv, jclass jcls, jint mode)
 {
-    /* 定义并初始化解码器状态 */
-    dec_state = speex_decoder_init(speex_lib_get_mode(mode));
-    if (speex_decoder_ctl(dec_state, SPEEX_GET_FRAME_SIZE, &frame_size) != 0)
+    /* 初始化解码器 */
+    decoder_state = speex_decoder_init(speex_lib_get_mode(mode));
+    if (speex_decoder_ctl(decoder_state, SPEEX_GET_FRAME_SIZE, &frame_size) != 0)
     {
         return 0;
     }
 
-    /* 定义预处理及设置 */
-    if (speex_decoder_ctl(dec_state, SPEEX_GET_SAMPLING_RATE, &sampling_rate) != 0)
+    if (speex_decoder_ctl(decoder_state, SPEEX_GET_SAMPLING_RATE, &sampling_rate) != 0)
     {
         return 0;
     }
+
+    /* 预处理器初始化及降噪设置
     preprocess_state = speex_preprocess_state_init(frame_size, sampling_rate);
     if (preprocess_state == NULL)
     {
@@ -53,9 +56,10 @@ Java_com_trto1987_speex_SpeexDecoder_init(JNIEnv *jenv, jclass jcls, jint mode)
     {
         return 0;
     }
+    */
 
-    /* 回声消除 */
-    echo_state = speex_echo_state_init(frame_size, echo_filter_rate * sampling_rate);
+    /* 回声消除初始化
+    echo_state = speex_echo_state_init(frame_size, ECHO_FILTER_RATE * sampling_rate);
     if (echo_state == NULL)
     {
         return 0;
@@ -64,6 +68,7 @@ Java_com_trto1987_speex_SpeexDecoder_init(JNIEnv *jenv, jclass jcls, jint mode)
     {
         return 0;
     }
+    */
 
     return frame_size;
 }
@@ -102,12 +107,14 @@ Java_com_trto1987_speex_SpeexDecoder_decode(
     speex_bits_init(&bits);
 
     speex_bits_read_from(&bits, buffer_in, size);
-    if (speex_decode_int(dec_state, &bits, buffer_out) != 0)
+    if (speex_decode_int(decoder_state, &bits, buffer_out) != 0)
     {
         return -2;
     }
     
+    /* 预处理（降噪、消除回音处理）
     speex_preprocess_run(preprocess_state, buffer_out);
+    */
 
     /* 赋值 */
     (*jenv)->SetShortArrayRegion(jenv, arr_out, 0, frame_size, buffer_out);
@@ -136,7 +143,9 @@ JNIEXPORT void JNICALL
 Java_com_trto1987_speex_SpeexDecoder_destroy(JNIEnv *jenv, jclass jcls)
 {
     /* 销毁释放资源 */
+    /* 预处理器和回声消除销毁
     speex_echo_state_destroy(echo_state);
     speex_preprocess_state_destroy(preprocess_state);
-    speex_decoder_destroy(dec_state);
+    */
+    speex_decoder_destroy(decoder_state);
 }

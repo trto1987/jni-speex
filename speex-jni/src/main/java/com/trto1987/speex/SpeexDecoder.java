@@ -15,7 +15,7 @@ public class SpeexDecoder {
     static {
         com.github.fommil.jni.JniLoader.load("speex-jni.so");
 
-        logger.error("Speex load native library successful.");
+        logger.error("SpeexDecoder load native library successful.");
 
         instance = new SpeexDecoder();
     }
@@ -29,7 +29,7 @@ public class SpeexDecoder {
     }
 
     /**
-     * init speex decoder.
+     * init speex decoder with default speex mode.
      */
     public void init() {
         init(SpeexModes.SPEEX_MODE_NB);
@@ -43,7 +43,7 @@ public class SpeexDecoder {
         frameSize = instance.init(nbModes.getMode());
 
         if (frameSize == 0) {
-            logger.error("Speex init error!!!");
+            logger.error("SpeexDecoder init error!!!");
         }
     }
 
@@ -59,8 +59,6 @@ public class SpeexDecoder {
      * or negative numbers if other error occurs.
      */
     public native int decode(byte arrInput[], short arrOutput[], int size);
-
-//    public native int encode(short lin[], int offset, byte encoded[], int size);
 
     /**
      * clear resource
